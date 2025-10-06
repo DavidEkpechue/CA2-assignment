@@ -8,15 +8,17 @@
 </head>
 <body>
     <div class="container">
-        <div class="corner top-left" id="top-left">
-            <div class="moving-box" id="moving-box" draggable="true">
-                Moving box
-            </div>
+        <div class="moving-box" id="movingBox" draggable="true">
+            Moving box
         </div>
-        <div class="corner top-right" id="top-right"></div>
-        <div class="corner bottom-left" id="bottom-left"></div>
-        <div class="corner bottom-right" id="bottom-right"></div>
+        
+        <!-- Drop zones for the corners -->
+        <div class="drop-zone top-left" data-position="top-left"></div>
+        <div class="drop-zone top-right" data-position="top-right"></div>
+        <div class="drop-zone bottom-left" data-position="bottom-left"></div>
+        <div class="drop-zone bottom-right" data-position="bottom-right"></div>
     </div>
+    
     <script src="script.js"></script>
 </body>
 </html>

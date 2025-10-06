@@ -1,101 +1,92 @@
-let draggedElement = null;
-let currentPosition = 'top-left';
+// Variable declarations: let, var, const
+let movingBox;
+var clickCount = 0;
+const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
 
-document.addEventListener('DOMContentLoaded', function() {
-    initializeDragAndDrop();
-    initializeClickHandler();
-    loadBoxPosition();
-});
+// Algorithm: Get random color
+const getRandomColor = () => {
+    let randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+};
 
-function initializeDragAndDrop() {
-    const movingBox = document.getElementById('moving-box');
-    const corners = document.querySelectorAll('.corner');
+// Algorithm: Position element in center of page
+const centerElement = () => {
+    let windowWidth = window.innerWidth;
+    let windowHeight = window.innerHeight;
+    let boxWidth = movingBox.offsetWidth;
+    let boxHeight = movingBox.offsetHeight;
+    
+    movingBox.style.left = (windowWidth - boxWidth) / 2 + 'px';
+    movingBox.style.top = (windowHeight - boxHeight) / 2 + 'px';
+};
 
-    movingBox.addEventListener('dragstart', handleDragStart);
-    movingBox.addEventListener('dragend', handleDragEnd);
+// Web Storage API - Load position
+function loadPosition() {
+    let savedPosition = localStorage.getItem('boxPosition');
+    if (savedPosition) {
+        movingBox.className = 'moving-box ' + savedPosition;
+    } else {
+        centerElement(); // Use centering algorithm
+    }
+}
 
-    corners.forEach(corner => {
-        corner.addEventListener('dragover', handleDragOver);
-        corner.addEventListener('dragenter', handleDragEnter);
-        corner.addEventListener('dragleave', handleDragLeave);
-        corner.addEventListener('drop', handleDrop);
+// Web Storage API - Save position  
+function savePosition(position) {
+    localStorage.setItem('boxPosition', position);
+}
+
+// Drag and Drop API setup
+function setupDragAndDrop() {
+    const dropZones = document.querySelectorAll('.drop-zone');
+    
+    // Set dragstart event using addEventListener
+    movingBox.addEventListener('dragstart', (e) => {
+        e.dataTransfer.effectAllowed = 'move';
+        movingBox.style.opacity = '0.5';
+    });
+    
+    // Set dragend event using addEventListener
+    movingBox.addEventListener('dragend', (e) => {
+        movingBox.style.opacity = '1';
+    });
+    
+    // Setup each drop zone using forEach
+    dropZones.forEach((zone) => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.classList.add('drag-over');
+        });
+        
+        zone.addEventListener('dragleave', (e) => {
+            zone.classList.remove('drag-over');
+        });
+        
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            
+            const position = zone.getAttribute('data-position');
+            movingBox.className = 'moving-box position-' + position;
+            savePosition('position-' + position);
+        });
     });
 }
 
-function initializeClickHandler() {
-    document.body.addEventListener('click', function(event) {
-        if (!event.target.closest('.moving-box')) {
-            changeBackgroundColor();
+// Set click handler using addEventListener (from JavaScript, not HTML)
+function setupClickHandler() {
+    document.body.addEventListener('click', (e) => {
+        if (e.target !== movingBox) {
+            clickCount++; // Use var variable
+            let randomColor = getRandomColor(); // Use arrow function
+            document.body.style.backgroundColor = randomColor;
         }
     });
 }
 
-function handleDragStart(e) {
-    draggedElement = e.target;
-    e.target.classList.add('dragging');
-}
-
-function handleDragEnd(e) {
-    e.target.classList.remove('dragging');
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
-}
-
-function handleDragEnter(e) {
-    e.target.classList.add('drag-over');
-}
-
-function handleDragLeave(e) {
-    e.target.classList.remove('drag-over');
-}
-
-function handleDrop(e) {
-    e.preventDefault();
-    e.target.classList.remove('drag-over');
-    
-    document.querySelector('.moving-box').remove();
-    document.querySelectorAll('.corner').forEach(corner => corner.classList.remove('has-box'));
-    
-    const newBox = document.createElement('div');
-    newBox.className = 'moving-box';
-    newBox.id = 'moving-box';
-    newBox.draggable = true;
-    newBox.textContent = 'Moving box';
-    
-    newBox.addEventListener('dragstart', handleDragStart);
-    newBox.addEventListener('dragend', handleDragEnd);
-    
-    e.target.appendChild(newBox);
-    e.target.classList.add('has-box');
-    
-    localStorage.setItem('movingBoxPosition', e.target.id);
-}
-
-function changeBackgroundColor() {
-    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2', '#A9DFBF', '#F9E79F', '#D5A6BD', '#AED6F1', '#F4D03F'];
-    document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-}
-
-function loadBoxPosition() {
-    const savedPosition = localStorage.getItem('movingBoxPosition');
-    if (savedPosition) {
-        document.querySelector('.moving-box').remove();
-        document.querySelectorAll('.corner').forEach(corner => corner.classList.remove('has-box'));
-        
-        const newBox = document.createElement('div');
-        newBox.className = 'moving-box';
-        newBox.id = 'moving-box';
-        newBox.draggable = true;
-        newBox.textContent = 'Moving box';
-        
-        newBox.addEventListener('dragstart', handleDragStart);
-        newBox.addEventListener('dragend', handleDragEnd);
-        
-        document.getElementById(savedPosition).appendChild(newBox);
-        document.getElementById(savedPosition).classList.add('has-box');
-    } else {
-        document.getElementById('top-left').classList.add('has-box');
-    }
-}
+// Initialize when DOM loads
+document.addEventListener('DOMContentLoaded', () => {
+    movingBox = document.getElementById('movingBox');
+    loadPosition();
+    setupDragAndDrop();
+    setupClickHandler();
+});
