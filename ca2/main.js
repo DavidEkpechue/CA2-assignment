@@ -5,6 +5,10 @@ class MemoryGame extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
+        this.firstCard = null;
+        this.secondCard = null;
+        this.lockBoard = false;
+        this.matchedPairs = 0;
     }
 
     connectedCallback() {
@@ -25,6 +29,7 @@ class MemoryGame extends HTMLElement {
         
         const totalCards = rows * cols;
         const uniqueCards = totalCards / 2;
+        this.totalPairs = uniqueCards;
 
         // Set up the grid
         const gameBoard = this.shadowRoot.querySelector('.game-board');
@@ -35,10 +40,76 @@ class MemoryGame extends HTMLElement {
         gameBoard.innerHTML = ShapeCard.getUniqueRandomCardsAsHTML(uniqueCards, true);
 
         // Add click event listeners to flip cards
-        this.shadowRoot.querySelectorAll('shape-card').forEach(sc => sc.addEventListener('click', e => {
-            e.target.flip();
-            console.log("Shape card is face up:", e.target.isFaceUp());
-        }));
+        const cards = this.shadowRoot.querySelectorAll('shape-card');
+        cards.forEach(card => {
+            card.addEventListener('click', () => this.handleCardClick(card));
+        });
+    }
+
+    handleCardClick(card) {
+        // Don't allow clicking if board is locked or card is already face up
+        if (this.lockBoard || card.isFaceUp()) {
+            return;
+        }
+
+        // Flip the card
+        card.flip();
+
+        // First card clicked
+        if (!this.firstCard) {
+            this.firstCard = card;
+            return;
+        }
+
+        // Second card clicked
+        this.secondCard = card;
+        this.lockBoard = true;
+
+        // Check if cards match
+        this.checkForMatch();
+    }
+
+    checkForMatch() {
+        const isMatch = this.firstCard.getAttribute('type') === this.secondCard.getAttribute('type') &&
+                        this.firstCard.getAttribute('colour') === this.secondCard.getAttribute('colour');
+
+        if (isMatch) {
+            this.handleMatch();
+        } else {
+            this.handleMismatch();
+        }
+    }
+
+    handleMatch() {
+        console.log('Match found!');
+        this.matchedPairs++;
+
+        // Reset for next turn
+        this.resetBoard();
+
+        // Check if game is complete
+        if (this.matchedPairs === this.totalPairs) {
+            setTimeout(() => {
+                alert('Congratulations! You won the game!');
+            }, 500);
+        }
+    }
+
+    handleMismatch() {
+        console.log('Not a match');
+        
+        // Flip cards back after delay
+        setTimeout(() => {
+            this.firstCard.flip();
+            this.secondCard.flip();
+            this.resetBoard();
+        }, 1000);
+    }
+
+    resetBoard() {
+        this.firstCard = null;
+        this.secondCard = null;
+        this.lockBoard = false;
     }
 }
 
