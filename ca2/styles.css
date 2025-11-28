@@ -125,48 +125,4 @@ memory-game {
 svg {
     width: 80%;
     height: 80%;
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-/* Make shapes more vibrant and fun */
-svg circle,
-svg rect,
-svg polygon {
-    transition: all 0.3s ease;
-}
-
-svg circle[fill="red"],
-svg rect[fill="red"],
-svg polygon[fill="red"] {
-    fill: #ff6b9d !important;
-}
-
-svg circle[fill="blue"],
-svg rect[fill="blue"],
-svg polygon[fill="blue"] {
-    fill: #a8e6cf !important;
-}
-
-svg circle[fill="green"],
-svg rect[fill="green"],
-svg polygon[fill="green"] {
-    fill: #b4f8c8 !important;
-}
-
-svg circle[fill="yellow"],
-svg rect[fill="yellow"],
-svg polygon[fill="yellow"] {
-    fill: #ffd3b6 !important;
-}
-
-svg circle[fill="orange"],
-svg rect[fill="orange"],
-svg polygon[fill="orange"] {
-    fill: #ffaaa5 !important;
-}
-
-svg circle[fill="purple"],
-svg rect[fill="purple"],
-svg polygon[fill="purple"] {
-    fill: #c7ceea !important;
 }
