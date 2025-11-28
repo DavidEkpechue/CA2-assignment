@@ -9,12 +9,17 @@ class MemoryGame extends HTMLElement {
         this.secondCard = null;
         this.lockBoard = false;
         this.matchedPairs = 0;
+        this.clickCount = 0;
     }
 
     connectedCallback() {
         // Get the template and add it to shadow DOM
         const template = document.getElementById('memory-game-template');
         this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+        // Setup reset button
+        const resetBtn = this.shadowRoot.querySelector('.reset-btn');
+        resetBtn.addEventListener('click', () => this.resetGame());
 
         // Start the game
         this.setupGame();
@@ -54,6 +59,8 @@ class MemoryGame extends HTMLElement {
 
         // Flip the card
         card.flip();
+        this.clickCount++;
+        this.updateClickDisplay();
 
         // First card clicked
         if (!this.firstCard) {
@@ -90,7 +97,7 @@ class MemoryGame extends HTMLElement {
         // Check if game is complete
         if (this.matchedPairs === this.totalPairs) {
             setTimeout(() => {
-                alert('Congratulations! You won the game!');
+                alert('Congratulations! You won the game in ' + this.clickCount + ' clicks!');
             }, 500);
         }
     }
@@ -110,6 +117,19 @@ class MemoryGame extends HTMLElement {
         this.firstCard = null;
         this.secondCard = null;
         this.lockBoard = false;
+    }
+
+    updateClickDisplay() {
+        const clickDisplay = this.shadowRoot.querySelector('.click-count');
+        clickDisplay.textContent = 'Clicks: ' + this.clickCount;
+    }
+
+    resetGame() {
+        this.clickCount = 0;
+        this.matchedPairs = 0;
+        this.updateClickDisplay();
+        this.resetBoard();
+        this.setupGame();
     }
 }
 

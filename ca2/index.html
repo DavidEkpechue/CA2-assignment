@@ -13,50 +13,7 @@
 
     <!-- Template for shape-card element -->
     <template id="shape-card-template">
-        <style>
-            .card {
-                display: inline-block;
-                width: var(--card-width);
-                height: var(--card-height);
-                border: var(--card-border) solid black;
-                position: relative;
-                transform-style: preserve-3d;
-                transition: transform 0.6s;
-                cursor: pointer;
-            }
-
-            .card-face-down {
-                transform: rotateY(0deg);
-            }
-
-            .card-face-up {
-                transform: rotateY(180deg);
-            }
-
-            .card-front, .card-back {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                backface-visibility: hidden;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .card-front {
-                background-color: #f0f0f0;
-            }
-
-            .card-back {
-                background-color: white;
-                transform: rotateY(180deg);
-            }
-
-            svg {
-                width: 80%;
-                height: 80%;
-            }
-        </style>
+        <link rel="stylesheet" href="styles.css">
         <div class="card card-face-down">
             <div class="card-front">?</div>
             <div class="card-back">
@@ -71,16 +28,14 @@
 
     <!-- Template for memory-game element -->
     <template id="memory-game-template">
-        <style>
-            .game-board {
-                display: grid;
-                gap: 10px;
-                justify-content: center;
-                margin: 20px auto;
-                max-width: fit-content;
-            }
-        </style>
-        <div class="game-board"></div>
+        <link rel="stylesheet" href="styles.css">
+        <div class="game-container">
+            <div class="game-info">
+                <button class="reset-btn">New Game</button>
+                <div class="click-count">Clicks: 0</div>
+            </div>
+            <div class="game-board"></div>
+        </div>
     </template>
 
     <script type="module" src="main.js"></script>
