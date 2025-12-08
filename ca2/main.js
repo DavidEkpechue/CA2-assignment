@@ -1,4 +1,6 @@
 import {ShapeCard} from './shapecard.js';
+import { db } from './firebase-config.js';
+import { collection, addDoc } from 'firebase/firestore';
 
 class MemoryGame extends HTMLElement {
 
@@ -97,6 +99,7 @@ class MemoryGame extends HTMLElement {
         // Check if game is complete
         if (this.matchedPairs === this.totalPairs) {
             setTimeout(() => {
+                this.saveGameResult();
                 alert('Congratulations! You won the game in ' + this.clickCount + ' clicks!');
             }, 500);
         }
@@ -130,6 +133,20 @@ class MemoryGame extends HTMLElement {
         this.updateClickDisplay();
         this.resetBoard();
         this.setupGame();
+    }
+
+    async saveGameResult() {
+        try {
+            const gameResult = {
+                clicks: this.clickCount,
+                timestamp: new Date()
+            };
+            
+            await addDoc(collection(db, 'gameResults'), gameResult);
+            console.log('Game result saved to Firestore');
+        } catch (error) {
+            console.error('Error saving game result:', error);
+        }
     }
 }
 
