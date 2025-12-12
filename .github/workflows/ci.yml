@@ -1,36 +1,42 @@
-name: CI
+name: Test and Deploy to Repo B
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main   # or your main branch
 
 jobs:
-  build:
+  test-and-deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Use Node.js 18
+    steps:
+      - name: Checkout Repository A
+        uses: actions/checkout@v4
+
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 18
 
-      - name: Install and test
+      - name: Install dependencies
         run: |
           cd ca2
-          npm ci
-          npm test
+          npm install
 
-      - name: Build
+      - name: Run Jest tests
+        run: |
+          cd ca2
+          npm test -- --ci
+
+      - name: Build static site
         run: |
           cd ca2
           npm run build
-
-      - name: Deploy to GitHub Pages
+      
+      - name: Deploy to Repository B
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          external_repository: DavidEkpechue/ca2-deploy
           publish_dir: ./ca2/dist
-          publish_branch: gh-pages
+          publish_branch: main   
+          personal_token: ${{ secrets.CA2 }}

@@ -1,5 +1,6 @@
 module.exports = {
-  testEnvironment: 'node',
+  // Use jsdom so DOM globals like `HTMLElement` and `document` exist in tests
+  testEnvironment: 'jsdom',
   transform: {
     '^.+\\.jsx?$': 'babel-jest'
   },
