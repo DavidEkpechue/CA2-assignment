@@ -35,7 +35,7 @@ jobs:
       - name: Deploy to Repository B
         uses: peaceiris/actions-gh-pages@v3
         with:
-          external_repository: DavidEkpechue/ca2-deploy
+          external_repository: ca-deploy
           publish_dir: ./ca2/dist
           publish_branch: main   
           personal_token: ${{ secrets.CA2 }}
