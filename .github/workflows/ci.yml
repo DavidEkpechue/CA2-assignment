@@ -3,8 +3,7 @@ name: Test and Deploy to Repo B
 on:
   push:
     branches:
-      - main   # or your main branch
-
+      - main  
 jobs:
   test-and-deploy:
     runs-on: ubuntu-latest

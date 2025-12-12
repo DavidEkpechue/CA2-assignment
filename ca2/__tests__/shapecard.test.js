@@ -8,7 +8,6 @@ describe('ShapeCard tests', () => {
   });
 
   test('getUniqueRandomCardsAsHTML returns the expected number of elements when duplicated', () => {
-    // request 2 unique cards with duplication enabled -> should produce 4 <shape-card> elements
     const html = ShapeCard.getUniqueRandomCardsAsHTML(2, true);
     const count = (html.match(/<shape-card/g) || []).length;
     expect(typeof html).toBe('string');
